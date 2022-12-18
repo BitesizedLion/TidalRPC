@@ -1,0 +1,16 @@
+C:\Users\Casper\source\repos\TidalRPC\bin\Debug\TidalRPC.exe.config
+C:\Users\Casper\source\repos\TidalRPC\bin\Debug\TidalRPC.exe
+C:\Users\Casper\source\repos\TidalRPC\bin\Debug\TidalRPC.pdb
+C:\Users\Casper\source\repos\TidalRPC\bin\Debug\DiscordRPC.dll
+C:\Users\Casper\source\repos\TidalRPC\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Casper\source\repos\TidalRPC\bin\Debug\DiscordRPC.pdb
+C:\Users\Casper\source\repos\TidalRPC\bin\Debug\DiscordRPC.xml
+C:\Users\Casper\source\repos\TidalRPC\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Casper\source\repos\TidalRPC\obj\Debug\TidalRPC.csproj.AssemblyReference.cache
+C:\Users\Casper\source\repos\TidalRPC\obj\Debug\TidalRPC.csproj.SuggestedBindingRedirects.cache
+C:\Users\Casper\source\repos\TidalRPC\obj\Debug\TidalRPC.Properties.Resources.resources
+C:\Users\Casper\source\repos\TidalRPC\obj\Debug\TidalRPC.csproj.GenerateResource.cache
+C:\Users\Casper\source\repos\TidalRPC\obj\Debug\TidalRPC.csproj.CoreCompileInputs.cache
+C:\Users\Casper\source\repos\TidalRPC\obj\Debug\TidalRPC.csproj.CopyComplete
+C:\Users\Casper\source\repos\TidalRPC\obj\Debug\TidalRPC.exe
+C:\Users\Casper\source\repos\TidalRPC\obj\Debug\TidalRPC.pdb
