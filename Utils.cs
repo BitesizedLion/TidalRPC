@@ -40,12 +40,12 @@ namespace TidalRPC
             if (!File.Exists(filePath))
             {
                 Console.WriteLine("GetAddress: coreProps does not exist, returning default address");
-                return "http://127.0.0.1:3650";
+                return "http://127.0.0.1:3650/";
             }
 
             string jsonString = File.ReadAllText(filePath);
             dynamic json = JsonConvert.DeserializeObject(jsonString);
-            string address = "http://"+json.address+"/";
+            string address = $"http://{json["address"]}/";
 
             return address;
         }

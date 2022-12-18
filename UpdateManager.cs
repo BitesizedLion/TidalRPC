@@ -50,16 +50,17 @@ namespace TidalRPC
         // Method for checking for new updates
         public static async Task CheckForUpdates()
         {
+            // Get the current application version
+            Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("tidalrpc/" + currentVersion.ToString()); // GH api needs custom user-agent
+
             while (!updateDenied)
             {
                 if (!IsUpdateCheckEnabled()) return;
 
-                // Get the current application version
-                Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-
                 // Fetch the latest release information from the GitHub API
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("tidalrpc/" + currentVersion.ToString()); // GH api needs custom user-agent
                 HttpResponseMessage response = await client.GetAsync("https://api.github.com/repos/BitesizedLion/TidalRPC/releases/latest");
 
                 if (response.IsSuccessStatusCode)

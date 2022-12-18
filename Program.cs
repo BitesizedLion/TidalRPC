@@ -62,8 +62,6 @@ namespace TidalRPC
             client.Dispose();
         }
 
-
-
         static async Task StartWebServer()
         {
             var listener = new HttpListener();
