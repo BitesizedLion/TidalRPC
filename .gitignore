@@ -254,3 +254,4 @@ FodyWeavers.xsd
 
 build/
 bin/
+obj/
