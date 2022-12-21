@@ -63,9 +63,9 @@ namespace TidalRPC
                 if (response.IsSuccessStatusCode)
                 {
                     string json = await response.Content.ReadAsStringAsync();
-                    dynamic release = JsonConvert.DeserializeObject(json); // i know this is bad, it will be improved later
+                    Release release = JsonConvert.DeserializeObject<Release>(json); // i know this is bad, it will be improved later
 
-                    Version latestVersion = new Version((string) release.tag_name);
+                    Version latestVersion = new Version(release.tag_name);
 
                     // Compare the version numbers
                     if (latestVersion > currentVersion)
@@ -78,7 +78,7 @@ namespace TidalRPC
                         switch (result)
                         {
                             case DialogResult.Yes:
-                                Process.Start((string)release.html_url); // Open the download URL in the default web browser
+                                Process.Start(release.html_url); // Open the download URL in the default web browser
                                 updatePrompted = false;
                                 break;
 
@@ -95,6 +95,12 @@ namespace TidalRPC
                 // Wait for an hour before checking for updates again
                 await Task.Delay(TimeSpan.FromHours(1));
             }
+        }
+
+        public class Release
+        {
+            public string tag_name { get; set; }
+            public string html_url { get; set; }
         }
     }
 }
