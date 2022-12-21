@@ -29,7 +29,7 @@ namespace TidalRPC
         [STAThread]
         static void Main(string[] args)
         {
-            if (args[0].ToLower() == "--debug") AttachConsole(ATTACH_PARENT_PROCESS);
+            if (args.Length != 0 && args[0]?.ToLower() == "--debug") AttachConsole(ATTACH_PARENT_PROCESS);
 
             Console.SetOut(new PrefixedWriter());
             Console.WriteLine("\n Init"); // Lazy fix to ensure it logs on new line

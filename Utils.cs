@@ -1,10 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TidalRPC
 {
@@ -72,6 +69,78 @@ namespace TidalRPC
             {
                 originalOut.Write(string.Format("[{0}] {1}", DateTime.Now, message));
             }
+        }
+
+        public static class RegistryManager // i know technically they arent keys
+        {
+            //public static object GetKeyValue(string valueName)
+            //{
+            //    string keyName = "SOFTWARE\\TidalRPC\\Settings";
+
+            //    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName))
+            //    {
+            //        if (key == null) return null;
+
+            //        return key.GetValue(valueName, 0);
+            //    }
+            //}
+
+            //public static void SetKeyValue(string valueName, object value, RegistryValueKind type)
+            //{
+            //    string keyName = "SOFTWARE\\TidalRPC\\Settings";
+
+            //    RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName, true);
+            //    if (key == null)
+            //    {
+            //        // Create the registry key if it does not exist
+            //        key = Registry.CurrentUser.CreateSubKey(keyName);
+            //    }
+
+            //    key.SetValue(valueName, value, type);
+            //}
+
+            //// This method fetches the value of a registry key and returns true if the value is 1, and false if the value is 0
+            //public static bool IsRegistryKeyEnabled(string valueName, bool fallback)
+            //{
+            //    string keyName = "SOFTWARE\\TidalRPC\\Settings";
+
+            //    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName))
+            //    {
+            //        if (key == null)
+            //        {
+            //            ToggleRegistryKey(fallback);
+            //            return fallback;
+            //        }
+
+            //        return (int)key.GetValue(valueName, 0) != 0;
+            //    }
+            //}
+            //public static bool IsRegistryKeyEnabled(string valueName)
+            //{
+            //    string keyName = "SOFTWARE\\TidalRPC\\Settings";
+
+            //    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName))
+            //    {
+            //        if (key != null) return true;
+
+            //        return (int)key.GetValue(valueName, 0) != 0;
+            //    }
+            //}
+
+            //// This method sets a specified registry key to the provided boolean value (but as 0 or 1)
+            //public static void ToggleRegistryKey(string valueName)
+            //{
+            //    string keyName = "SOFTWARE\\TidalRPC\\Settings";
+
+            //    RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName, true);
+            //    if (key == null)
+            //    {
+            //        // Create the registry key if it does not exist
+            //        key = Registry.CurrentUser.CreateSubKey(keyName);
+            //    }
+
+            //    key.SetValue(valueName, Convert.ToInt32(!IsRegistryKeyEnabled(valueName)), RegistryValueKind.DWord);
+            //}
         }
     }
 }
