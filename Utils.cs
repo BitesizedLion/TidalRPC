@@ -47,19 +47,19 @@ namespace TidalRPC
             return address;
         }
 
-        // Prefixes 
-        public class PrefixedWriter : TextWriter
+        // Prefixes the console logs as `[date] message`
+        public class TimestampedWriter : TextWriter
         {
-            private TextWriter originalOut;
+            private readonly TextWriter originalOut;
 
-            public PrefixedWriter()
+            public TimestampedWriter()
             {
                 originalOut = Console.Out;
             }
 
             public override Encoding Encoding
             {
-                get { return new ASCIIEncoding(); }
+                get { return Encoding.UTF8; }
             }
             public override void WriteLine(string message)
             {
