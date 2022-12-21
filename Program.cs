@@ -148,6 +148,7 @@ namespace TidalRPC
             }
         }
 
+        // Method for checking if Tidal is closed, if yes, then clear presence
         static async Task ClearOnCloseCheck()
         {
             while (true)
