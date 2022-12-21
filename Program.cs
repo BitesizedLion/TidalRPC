@@ -92,7 +92,7 @@ namespace TidalRPC
                     var gameEvent = JsonConvert.DeserializeObject<GameEvent>(requestBody);
                     var songData = gameEvent.Data.Frame;
 
-                    trayIcon.ContextMenuStrip.Items[1].Text = songData.State == "playing" ? "Status: playing " + songData.Title : "Status: paused";
+                    trayIcon.ContextMenuStrip.Items[1].Text = songData.State == "playing" ? $"Status: playing {songData.Title}" : "Status: paused";
 
                     // Update the presence with the data from the request
                     if (rpcEnabled)
@@ -177,7 +177,7 @@ namespace TidalRPC
 
             var menu = new ContextMenuStrip();
 
-            var topItem = new ToolStripMenuItem("Tidal RPC, by BitesizedLion v" + Assembly.GetExecutingAssembly().GetName().Version)
+            var topItem = new ToolStripMenuItem($"Tidal RPC, by BitesizedLion v{Assembly.GetExecutingAssembly().GetName().Version}")
             {
                 Enabled = false,
                 Image = Icon.ExtractAssociatedIcon(Application.ExecutablePath).ToBitmap()
