@@ -11,7 +11,8 @@ namespace TidalRPC
 {
     public static class UpdateManager
     {
-        static bool updateDenied = false;
+        private static bool updateDenied = false;
+        private static bool updatePrompted = false;
 
         // Method for checking if update checking is enabled
         public static bool IsUpdateCheckEnabled()
@@ -19,16 +20,15 @@ namespace TidalRPC
             string keyName = "SOFTWARE\\TidalRPC\\Settings";
             string valueName = "CheckForUpdates";
 
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName))
-            {
-                if (key == null)
-                {
-                    ToggleUpdateCheck(true);
-                    return true;
-                }
+            using RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName);
 
-                return (int)key.GetValue(valueName, 0) != 0;
+            if (key == null)
+            {
+                ToggleUpdateCheck(true);
+                return true;
             }
+
+            return (int)key.GetValue(valueName, 0) != 0;
         }
 
         // Method for toggling update checking
@@ -58,7 +58,7 @@ namespace TidalRPC
 
             while (!updateDenied)
             {
-                if (!IsUpdateCheckEnabled()) return;
+                if (!IsUpdateCheckEnabled() || updatePrompted) return;
 
                 // Fetch the latest release information from the GitHub API
                 HttpResponseMessage response = await client.GetAsync("https://api.github.com/repos/BitesizedLion/TidalRPC/releases/latest");
@@ -66,8 +66,9 @@ namespace TidalRPC
                 if (response.IsSuccessStatusCode)
                 {
                     string json = await response.Content.ReadAsStringAsync();
-                    dynamic release = JsonConvert.DeserializeObject(json);
-                    Version latestVersion = new Version(((string)release.tag_name).Replace("v", ""));
+                    dynamic release = JsonConvert.DeserializeObject(json); // i know this is bad, it will be improved later
+
+                    Version latestVersion = new Version(((string)release.tag_name));
 
                     // Compare the version numbers
                     if (latestVersion > currentVersion)
@@ -75,14 +76,18 @@ namespace TidalRPC
                         // Prompt the user to update
                         DialogResult result = MessageBox.Show("A new version of the software is available. Do you want to download it?", "Update Available", MessageBoxButtons.YesNo);
                         
+                        updatePrompted = true;
+
                         switch (result)
                         {
                             case DialogResult.Yes:
                                 Process.Start((string)release.html_url); // Open the download URL in the default web browser
+                                updatePrompted = false;
                                 break;
 
                             case DialogResult.No:
                                 updateDenied = true;
+                                updatePrompted = false;
                                 break;
 
                         }
