@@ -28,7 +28,7 @@ namespace TidalRPC
                 return true;
             }
 
-            return (int)key.GetValue(valueName, 0) != 0;
+            return (int) key.GetValue(valueName, 0) != 0;
         }
 
         // Method for toggling update checking
@@ -38,23 +38,20 @@ namespace TidalRPC
             string valueName = "CheckForUpdates";
 
             RegistryKey key = Registry.CurrentUser.OpenSubKey(keyName, true);
-            if (key == null)
-            {
-                // Create the registry key if it does not exist
-                key = Registry.CurrentUser.CreateSubKey(keyName);
-            }
+
+            if (key == null) key = Registry.CurrentUser.CreateSubKey(keyName); // Create the registry key if it does not exist
 
             key.SetValue(valueName, Convert.ToInt32(checkForUpdates), RegistryValueKind.DWord);
         }
 
-        // Method for checking for new updates
+        // Method for checking for new updates using Github Releases
         public static async Task CheckForUpdates()
         {
             // Get the current application version
             Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("tidalrpc/" + currentVersion.ToString()); // GH api needs custom user-agent
+            client.DefaultRequestHeaders.UserAgent.ParseAdd($"tidalrpc/{currentVersion}"); // GH api needs custom user-agent
 
             while (!updateDenied)
             {
@@ -68,7 +65,7 @@ namespace TidalRPC
                     string json = await response.Content.ReadAsStringAsync();
                     dynamic release = JsonConvert.DeserializeObject(json); // i know this is bad, it will be improved later
 
-                    Version latestVersion = new Version(((string)release.tag_name));
+                    Version latestVersion = new Version((string) release.tag_name);
 
                     // Compare the version numbers
                     if (latestVersion > currentVersion)
@@ -93,7 +90,7 @@ namespace TidalRPC
                         }
                     }
                 }
-                else { Console.WriteLine("releases req failed: " + response.StatusCode); }
+                else { Console.WriteLine($"Update Check HTTP Req failed, status code: {response.StatusCode}"); }
 
                 // Wait for an hour before checking for updates again
                 await Task.Delay(TimeSpan.FromHours(1));
