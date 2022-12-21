@@ -21,3 +21,5 @@ To change the port, you need to go to `%programdata%\SteelSeries\SteelSeries Eng
 - Tray Icon
 
 ### If you want to support the development of TidalRPC, you can donate at [https://www.buymeacoffee.com/caspr](https://www.buymeacoffee.com/caspr).
+
+**NOTICE: versioning is `major.minor.revision.build`**
