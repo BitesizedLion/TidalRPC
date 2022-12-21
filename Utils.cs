@@ -28,7 +28,7 @@ namespace TidalRPC
                 Console.WriteLine("CheckCoreProps: coreProps does not exist, creating it");
                 string contents = "{\"address\":\"127.0.0.1:3650\"}";
                 File.WriteAllText(filePath, contents);
-            }
+            } else { Console.WriteLine("CheckCoreProps: coreProps was found"); }
         }
 
         // Method for getting the address
@@ -48,6 +48,30 @@ namespace TidalRPC
             string address = $"http://{json["address"]}/";
 
             return address;
+        }
+
+        // Prefixes 
+        public class PrefixedWriter : TextWriter
+        {
+            private TextWriter originalOut;
+
+            public PrefixedWriter()
+            {
+                originalOut = Console.Out;
+            }
+
+            public override Encoding Encoding
+            {
+                get { return new ASCIIEncoding(); }
+            }
+            public override void WriteLine(string message)
+            {
+                originalOut.WriteLine(string.Format("[{0}] {1}", DateTime.Now, message));
+            }
+            public override void Write(string message)
+            {
+                originalOut.Write(string.Format("[{0}] {1}", DateTime.Now, message));
+            }
         }
     }
 }

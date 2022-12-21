@@ -9,6 +9,9 @@ using Button = DiscordRPC.Button;
 using System.Drawing;
 using System.Reflection;
 using System.IO;
+using System.Runtime.InteropServices;
+using static TidalRPC.Utils;
+using System.Diagnostics;
 
 namespace TidalRPC
 {
@@ -16,13 +19,21 @@ namespace TidalRPC
     {
         static DiscordRpcClient client;
         static NotifyIcon trayIcon;
-        static TimeSpan lastActivity;
         static bool rpcEnabled = true;
         static bool showAds = false;
 
+        [DllImport("kernel32.dll")]
+        static extern bool AttachConsole(int dwProcessId);
+        private const int ATTACH_PARENT_PROCESS = -1; // dont know if this does anything
+
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            if (args[0].ToLower() == "--debug") AttachConsole(ATTACH_PARENT_PROCESS);
+
+            Console.SetOut(new PrefixedWriter());
+            Console.WriteLine("\n Init"); // Lazy fix to ensure it logs on new line
+
             // Create a new Discord RPC client
             client = new DiscordRpcClient("584458858731405315");
 
@@ -44,7 +55,7 @@ namespace TidalRPC
             _ = UpdateManager.CheckForUpdates();
 
             // Check if coreprops.json exists, if not, create it.
-            Utils.CheckCoreProps();
+            CheckCoreProps();
 
             // Create the tray icon
             CreateTrayIcon();
@@ -53,7 +64,7 @@ namespace TidalRPC
             _ = StartWebServer();
 
             // Start the inactivity check
-            _ = InactivityCheck();
+            _ = ClearOnCloseCheck();
 
             // Needed for tray icon
             Application.Run();
@@ -65,7 +76,7 @@ namespace TidalRPC
         static async Task StartWebServer()
         {
             var listener = new HttpListener();
-            listener.Prefixes.Add(Utils.GetAddress());
+            listener.Prefixes.Add(GetAddress());
             listener.Start();
             Console.WriteLine("Webserver started");
 
@@ -86,6 +97,8 @@ namespace TidalRPC
                     // Update the presence with the data from the request
                     if (rpcEnabled)
                     {
+                        Console.WriteLine($"RPC Enabled: Received hit for {songData.Title} - {songData.Artist}");
+
                         RichPresence presence = new RichPresence()
                         {
                             Details = songData.Title,
@@ -105,6 +118,7 @@ namespace TidalRPC
 
                         if (songData.Url != null)
                         {
+                            //Console.WriteLine($"Adding button to presence");
                             presence.Buttons = new Button[]
                             {
                                 new Button() { Label = "Open Song", Url = songData.Url }
@@ -114,14 +128,15 @@ namespace TidalRPC
                         // Untested
                         if(songData.Title == "Advertisement" && !showAds)
                         {
+                            Console.WriteLine($"It's an ad, clearing presence");
                             client.ClearPresence();
                         }
                         {
                             client.SetPresence(presence);
                         }
 
-                        lastActivity = TimeSpan.FromTicks(DateTime.Now.Ticks);
-                    } else { client.ClearPresence(); }
+                        //lastActivity = TimeSpan.FromTicks(DateTime.Now.Ticks);
+                    } else { client.ClearPresence(); Console.WriteLine($"RPC Disabled: Received hit for {songData.Title} - ${songData.Artist} but clearing..."); }
                 }
 
                 // Send a response
@@ -133,14 +148,15 @@ namespace TidalRPC
             }
         }
 
-        static async Task InactivityCheck()
+        static async Task ClearOnCloseCheck()
         {
             while (true)
             {
-                TimeSpan elapsedTime = TimeSpan.FromTicks(DateTime.Now.Ticks) - lastActivity;
+                Process[] processes = Process.GetProcessesByName("TIDAL");
 
-                if (elapsedTime.TotalSeconds >= 5)
+                if (processes.Length < 1 && client.CurrentPresence != null)
                 {
+                    Console.WriteLine("Clearing presence because TIDAL.exe is closed");
                     client.ClearPresence();
                 }
 
@@ -190,6 +206,8 @@ namespace TidalRPC
             menu.Items.Add(toggleUpdatesMenuItem);
             menu.Items.Add(exitMenuItem);
             trayIcon.ContextMenuStrip = menu;
+
+            Console.WriteLine("Created Tray Icon");
         }
 
         // Exit the program
