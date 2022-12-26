@@ -71,7 +71,7 @@ namespace TidalRPC
                     if (latestVersion > currentVersion)
                     {
                         // Prompt the user to update
-                        DialogResult result = MessageBox.Show("A new version of the software is available. Do you want to download it?", "Update Available", MessageBoxButtons.YesNo);
+                        DialogResult result = MessageBox.Show("A new version of TidalRPC is available. Do you want to download it?", "Update Available for TidalRPC", MessageBoxButtons.YesNo);
                         
                         updatePrompted = true;
 
