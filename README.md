@@ -2,6 +2,9 @@
 
 **NOTICE: versioning is `major.minor.revision.build`**
 
+![](https://user-images.githubusercontent.com/42980888/212440251-2c1ffe55-b132-4966-8327-88e86f46d8f5.png)
+![](https://user-images.githubusercontent.com/42980888/212440257-ef827b46-06bf-44de-a165-024fa9b992b9.png)
+
 TidalRPC is a program that uses Tidal's SteelSeries integration to display Discord Rich Presence.
 
 It is not compatible with SteelSeries Engine software.
