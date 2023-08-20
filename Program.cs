@@ -103,7 +103,7 @@ namespace TidalRPC
                         {
                             Details = songData.Title,
                             State = songData.Artist,
-                            Timestamps = new Timestamps()
+                            Timestamps = songData.State == "paused" ? null : new Timestamps()
                             {
                                 Start = DateTime.UtcNow - TimeSpan.FromSeconds(songData.Time),
                                 End = DateTime.UtcNow + TimeSpan.FromSeconds(songData.Duration - songData.Time)
@@ -112,7 +112,7 @@ namespace TidalRPC
                             {
                                 LargeImageKey = songData.ImageUrl,
                                 LargeImageText = songData.Album,
-                                SmallImageKey = songData.State
+                                SmallImageKey = songData.State == "paused" ? "pause" : null
                             }
                         };
 
