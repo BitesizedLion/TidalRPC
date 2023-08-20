@@ -138,7 +138,7 @@ namespace TidalRPC
                 return promptForm.ShowDialog() == DialogResult.OK ? textBox.Text : "US";
             }
 
-            // Method for checking if update checking is enabled
+            // Method for getting the country code
             private static string GetCountryCode()
             {
                 string keyName = "SOFTWARE\\TidalRPC\\Settings";
