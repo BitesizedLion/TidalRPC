@@ -139,7 +139,7 @@ namespace TidalRPC
             }
 
             // Method for getting the country code
-            private static string GetCountryCode()
+            public static string GetCountryCode()
             {
                 string keyName = "SOFTWARE\\TidalRPC\\Settings";
                 string valueName = "CountryCode";
