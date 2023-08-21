@@ -50,7 +50,7 @@ namespace TidalRPC
             // Get the current application version
             Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
-            HttpClient client = new HttpClient();
+            HttpClient client = new HttpClient(); // TODO: Move to "using"
             client.DefaultRequestHeaders.UserAgent.ParseAdd($"tidalrpc/{currentVersion}"); // GH api needs custom user-agent
 
             while (!updateDenied)

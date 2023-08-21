@@ -12,6 +12,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using static TidalRPC.Utils;
 using System.Diagnostics;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace TidalRPC
 {
@@ -99,6 +101,15 @@ namespace TidalRPC
                     {
                         Console.WriteLine($"RPC Enabled: Received hit for {songData.Title} - {songData.Artist}");
 
+                        Match match = Regex.Match(songData.Url, @"\/track\/(\d+)");
+
+                        string trackIdSegment = match.Groups[1].Value;
+                        int trackId = int.Parse(trackIdSegment);
+
+                        Track track = await FetchTrackData(trackId);
+
+                        Console.WriteLine(track.album.videoCover);
+
                         RichPresence presence = new RichPresence()
                         {
                             Details = songData.Title,
@@ -110,7 +121,7 @@ namespace TidalRPC
                             },
                             Assets = new Assets()
                             {
-                                LargeImageKey = songData.ImageUrl,
+                                LargeImageKey = track.album.videoCover != null ? $"https://t-artwork.obelous.com/artwork/{track.album.videoCover}.gif" : songData.ImageUrl,
                                 LargeImageText = songData.Album,
                                 SmallImageKey = songData.State == "paused" ? "pause" : null
                             }
@@ -197,6 +208,13 @@ namespace TidalRPC
             var toggleUpdatesMenuItem = new ToolStripMenuItem("Toggle Updates") { Checked = UpdateManager.IsUpdateCheckEnabled(),CheckOnClick = true };
             toggleUpdatesMenuItem.Click += (sender, e) => { UpdateManager.ToggleUpdateCheck(!UpdateManager.IsUpdateCheckEnabled()); }; // sry about this
 
+            var configureCountryMenuItem = new ToolStripMenuItem("Configure Country");
+            configureCountryMenuItem.Click += (sender, e) =>
+            {
+                String countryCode = CountryCodeUtility.PromptForValidCountryCode();
+                Console.WriteLine(countryCode);
+            };
+
             var exitMenuItem = new ToolStripMenuItem("Exit");
             exitMenuItem.Click += (sender, e) => Exit();
 
@@ -205,6 +223,7 @@ namespace TidalRPC
             menu.Items.Add(toggleRPCMenuItem);
             menu.Items.Add(toggleAdsMenuItem);
             menu.Items.Add(toggleUpdatesMenuItem);
+            menu.Items.Add(configureCountryMenuItem);
             menu.Items.Add(exitMenuItem);
             trayIcon.ContextMenuStrip = menu;
 
@@ -243,6 +262,50 @@ namespace TidalRPC
             public int Duration { get; set; }
             public int Time { get; set; }
             public string State { get; set; }
+        }
+
+        public class Track
+        {
+            public string Id { get; set; }
+            public Album album { get; set; }
+            
+        }
+
+        public class Album
+        {
+            public int id { get; set; }
+            public object videoCover { get; set; }
+        }
+
+        // get Url from songData.Url
+        // extract id (https://tidal.com/browse/track/227647839), 227647839
+        // fetch listen.tidal.com/v1/tracks/{id}?countryCode={CountryCodeUtility.GetCountryCode()}&locale=en_US&deviceType=BROWSER
+        // w/
+        //  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
+        //  X-Tidal-Token: 49YxDN9a2aFV6RTG
+
+        public static async Task<Track> FetchTrackData(int trackId)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36");
+                client.DefaultRequestHeaders.Add("X-Tidal-Token", "49YxDN9a2aFV6RTG");
+
+                string url = $"https://listen.tidal.com/v1/tracks/{trackId}?countryCode={CountryCodeUtility.GetCountryCode()}&locale=en_US&deviceType=BROWSER";
+
+                HttpResponseMessage response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    Track track = JsonConvert.DeserializeObject<Track>(responseBody);
+                    return track;
+                }
+                else
+                {
+                    throw new Exception($"Request failed with status code: {response.StatusCode}");
+                }
+            }
         }
     }
 }
