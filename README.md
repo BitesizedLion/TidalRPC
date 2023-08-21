@@ -13,6 +13,8 @@ The way it works is, it runs a web server on port 3650 (by default) which Tidal 
 
 To change the port, you need to go to `%programdata%\SteelSeries\SteelSeries Engine 3\coreProps.json`.
 
+On first use, please right-click the tray icon and select your country (Obs! it should be a 2-character code)
+
 ### If you want to support the development of TidalRPC, you can donate at [https://www.buymeacoffee.com/caspr](https://www.buymeacoffee.com/caspr).
 
 ## Features
