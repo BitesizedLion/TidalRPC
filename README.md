@@ -19,7 +19,7 @@ To change the port, you need to go to `%programdata%\SteelSeries\SteelSeries Eng
 
 - Basic RPC Functionality
   - Track Info
-  - Album Artwork
+  - Album Artwork (incl. Animated)
   - Toggle RPC option
   - Toggle Ads option
 - Auto-creates `coreProps.json`
