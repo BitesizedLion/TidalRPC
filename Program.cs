@@ -89,6 +89,7 @@ namespace TidalRPC
                 {
                     // Read the request body
                     string requestBody = new StreamReader(context.Request.InputStream).ReadToEnd();
+                    Console.WriteLine(requestBody);
 
                     // Deserialize the JSON data
                     var gameEvent = JsonConvert.DeserializeObject<GameEvent>(requestBody);
@@ -101,14 +102,20 @@ namespace TidalRPC
                     {
                         Console.WriteLine($"RPC Enabled: Received hit for {songData.Title} - {songData.Artist}");
 
+
+
                         Match match = Regex.Match(songData.Url, @"\/track\/(\d+)");
+                        Track track = null;
+                        String videoCover = null;
+                        if(match.Success)
+                        {
+                            int trackId = int.Parse(match.Groups[1].Value);
 
-                        string trackIdSegment = match.Groups[1].Value;
-                        int trackId = int.Parse(trackIdSegment);
+                            track = await FetchTrackData(trackId);
 
-                        Track track = await FetchTrackData(trackId);
+                            videoCover = (string)track.album.videoCover;
+                        }
 
-                        Console.WriteLine(track.album.videoCover);
 
                         RichPresence presence = new RichPresence()
                         {
@@ -121,7 +128,7 @@ namespace TidalRPC
                             },
                             Assets = new Assets()
                             {
-                                LargeImageKey = track.album.videoCover != null ? $"https://t-artwork.obelous.com/artwork/{track.album.videoCover}.gif" : songData.ImageUrl,
+                                LargeImageKey = videoCover != null ? $"https://t-artwork.obelous.com/artwork/{videoCover}.gif" : songData.ImageUrl,
                                 LargeImageText = songData.Album,
                                 SmallImageKey = songData.State == "paused" ? "pause" : null
                             }
@@ -129,10 +136,10 @@ namespace TidalRPC
 
                         if (songData.Url != null)
                         {
-                            //Console.WriteLine($"Adding button to presence");
-                            presence.Buttons = new Button[]
+                            Console.WriteLine(songData.Url);
+                            presence.Buttons = String.IsNullOrEmpty(songData.Url) ? null : new Button[]
                             {
-                                new Button() { Label = "Open Song", Url = songData.Url }
+                                new Button() { Label = "Open Song", Url = songData.Url  }
                             };
                         };
 
@@ -303,7 +310,8 @@ namespace TidalRPC
                 }
                 else
                 {
-                    throw new Exception($"Request failed with status code: {response.StatusCode}");
+                    Console.WriteLine($"An error occurred during the API request: {response.StatusCode}");
+                    return null; // Fallback to null
                 }
             }
         }
