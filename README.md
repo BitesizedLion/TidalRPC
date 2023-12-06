@@ -24,7 +24,7 @@ On first use, please right-click the tray icon and select your country (it shoul
   - Track Info
   - Album Artwork (incl. Animated)
   - Toggle RPC option
-  - Toggle Ads option
+  - Toggle Ads option (aka don't show presence when ads are playing)
 - Auto-creates `coreProps.json`
 - Clears presence when Tidal isn't running
 - Update Checker (setting saved in Registry)
