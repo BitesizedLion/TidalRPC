@@ -8,7 +8,7 @@
 ![](https://user-images.githubusercontent.com/42980888/212440251-2c1ffe55-b132-4966-8327-88e86f46d8f5.png)
 ![](https://user-images.githubusercontent.com/42980888/212440257-ef827b46-06bf-44de-a165-024fa9b992b9.png)
 
-TidalRPC is a program that uses Tidal's SteelSeries integration to display Discord Rich Presence (RPC).
+TidalRPC is a program that uses Tidal's SteelSeries integration to display Discord Rich Presence (RPC), further explanation can be found further down.
 
 The way it works is, it runs a web server on port 3650 (by default) which Tidal sends all track information to.
 
@@ -29,3 +29,12 @@ On first use, please right-click the tray icon and select your country (it shoul
 - Clears presence when Tidal isn't running
 - Update Checker (setting saved in Registry)
 - Tray Icon
+
+
+## Technical details
+
+As mentioned earlier, the way this works is by using the integration Tidal's desktop app has with SteelSeries's [Engine software](https://steelseries.com/gg/engine). I'll refer to it as "Engine" from now on.
+
+Engine launches a webserver on the IP:PORT specified in `%programdata%\SteelSeries\SteelSeries Engine 3\coreProps.json`.
+
+Tidal finds this webserver thanks to the aforementioned file and sends playback information to it.
