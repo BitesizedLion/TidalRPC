@@ -37,4 +37,13 @@ As mentioned earlier, the way this works is by using the integration Tidal's des
 
 Engine launches a webserver on the IP:PORT specified in `%programdata%\SteelSeries\SteelSeries Engine 3\coreProps.json`.
 
-Tidal finds this webserver thanks to the aforementioned file and sends playback information to it.
+Tidal finds this webserver thanks to the aforementioned file and POSTs the playback information to `/game_event` as JSON, this consists of:
+- Song Title
+- Artist
+- Album
+- Url (to the song)
+- Image Url (to album cover)
+- Duration (how much of the song has been played)
+- Time (when the song started playing)
+- State (indicates playback status, e.g. paused)
+- 
