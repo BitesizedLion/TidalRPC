@@ -1,5 +1,8 @@
 # TidalRPC
 
+> [!IMPORTANT]
+> I don't maintain open source projects anymore but to my knowledge TidalRPC still works.
+
 > [!NOTE]
 > Versioning is `major.minor.revision.build`
 > 
